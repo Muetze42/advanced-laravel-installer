@@ -26,6 +26,32 @@ class Installer extends LaravelInstaller
     /**
      * @return void
      */
+    protected function afterComposerInstall(): void
+    {
+       parent::afterComposerInstall();
+        if ($this->installInertia) {
+            $installNovaNpmDependencies = $this->command->choice(
+                'Would You like install NPM dependencies and compile the assets?',
+                [
+                    'no',
+                    'Yes with NPM',
+                    'Yes with PNPM',
+                ]
+            );
+
+            if ($installNovaNpmDependencies == 'Yes with NPM') {
+                $this->runCommand('npm i && npm run build');
+            }
+
+            if ($installNovaNpmDependencies == 'Yes with PNPM') {
+                $this->runCommand('pnpm i && pnpm run build');
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
     protected function customChanges(): void
     {
         $composerJson = json_decode($this->command->cwdDisk->get($this->appFolder . '/composer.json'), true);
@@ -59,6 +85,13 @@ class Installer extends LaravelInstaller
             'axios',
             $this->formatVersion('axios', '^1.5.1')
         );
+
+        // bootstrap.js prettier
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/bootstrap.js');
+        $this->command->cwdDisk->put($this->appFolder . '/resources/js/bootstrap.js', $contents);
+        // PHPCS Controller
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
+        $this->command->cwdDisk->put($this->appFolder . '/Http/Controllers/Controller.php', $contents);
 
         // QS files
         $files = ['/.editorconfig', '/phpcs.xml'];
@@ -111,11 +144,23 @@ class Installer extends LaravelInstaller
             }
         }
 
+        $viteConfig = $this->appFolder . '/vite.config.js';
+        if ($this->installInertia) {
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/vite.config.js');
+            $this->command->cwdDisk->put($viteConfig, $contents);
+
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/Home.vue');
+            $this->command->cwdDisk->put($this->appFolder . '/resources/js/Pages/Home/Index.vue', $contents);
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/HomeController.php');
+            $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/HomeController.php', $contents);
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/web.php');
+            $this->command->cwdDisk->put($this->appFolder . '/routes/web.php', $contents);
+        }
+
         if ($this->useScss) {
             $this->command->cwdDisk->deleteDirectory($this->appFolder . '/resources/css');
             $this->command->cwdDisk->put($this->appFolder . '/resources/scss/app.scss', "\n");
 
-            $viteConfig = $this->appFolder . '/vite.config.js';
             $contents = $this->command->cwdDisk->get($viteConfig);
             $contents = str_replace('resources/css/app.css', 'resources/scss/app.scss', $contents);
             $this->command->cwdDisk->put($viteConfig, $contents);
@@ -218,6 +263,21 @@ class Installer extends LaravelInstaller
             $this->appFolder . '/package.json',
             json_encode($packageJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
         );
+
+        if ($this->installInertia) {
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/app.js');
+            $this->command->cwdDisk->put($this->appFolder . '/resources/js/app.js', $contents);
+        }
+
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/app.blade.php');
+        if ($this->useScss) {
+            $contents = str_replace('resources/css/app.css', 'resources/scss/app.scss', $contents);
+        }
+        if ($this->installTailwindCss) {
+            $contents = str_replace('<body>', '<body class="antialiased">', $contents);
+        }
+        $name = $this->installInertia ? 'app' : 'layout';
+        $this->command->cwdDisk->put($this->appFolder . '/resources/views/' . $name . '.blade.php', $contents);
     }
 
     /**

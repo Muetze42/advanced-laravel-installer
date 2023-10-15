@@ -6,14 +6,22 @@ the following changes:
 * Remove [Starter Kits](https://laravel.com/docs/starter-kits) option
 * Add [Tailwind CSS](https://tailwindcss.com) option
 * Tailwind CSS will be installed with
-  plugins [@tailwindcss/forms](https://www.npmjs.com/package/@tailwindcss/forms) and [tailwind-scrollbar](https://www.npmjs.com/package/tailwind-scrollbar)
+  plugins [@tailwindcss/forms](https://www.npmjs.com/package/@tailwindcss/forms)
+  and [tailwind-scrollbar](https://www.npmjs.com/package/tailwind-scrollbar)
 * Add [FontAwesome (Vue.js)](https://fontawesome.com) option
 * Add [ESLint](https://eslint.org) option
 * Add [IDE Helper Generator for Laravel](https://github.com/barryvdh/laravel-ide-helper) option
-* Add [Sass](https://sass-lang.com) as default stylesheet by default option
+* Add „[Sass](https://sass-lang.com) instead of CSS“ option
+* Add [norman-huth/helpers-collection-laravel](https://github.com/Muetze42/helpers-collection-laravel) option
 * Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
+* [Exception handler](storage/Handler.php) response as JSON on API path
+* Set application's "home" route to `/`
+  in [RouteServiceProvider](https://github.com/laravel/laravel/blob/10.x/app/Providers/RouteServiceProvider.php#L20)
+* Add `ForceJsonResponse` middleware for API routes if `norman-huth/helpers-collection-laravel` selected to install
+* Add optional [pnpm](https://pnpm.io/) / [npm](https://www.npmjs.com/) dependencies installation and assets compiling
 * Automatic add [phpcs.xml](storage/phpcs.xml) file
 * Change [.editorconfig](storage/.editorconfig) file
+* Add [Model](storage/stubs/model.stub) and [Migration \(Create\)](storage/stubs/migration.create.stub) stubs
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
 I create each of my Laravel applications with this installer to save time on initial setup.

@@ -14,8 +14,8 @@ class Installer extends LaravelInstaller
     protected bool $installHeadlessUi = false;
     protected bool $installTailwindCss;
     protected bool $installEslint = false;
-    protected bool $installHelpersCollection = false;
-    protected bool $useScss;
+    protected bool $installHelpersCollection = true;
+    protected bool $useScss = true;
 
     protected function setStorageDisk(): void
     {
@@ -92,7 +92,10 @@ class Installer extends LaravelInstaller
         $this->command->cwdDisk->put($this->appFolder . '/resources/js/bootstrap.js', $contents);
         // PHPCS Controller
         $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
-        $this->command->cwdDisk->put($this->appFolder . '/Http/Controllers/Controller.php', $contents);
+        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/Controller.php', $contents);
+        // JSON Response for errors on API path
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
+        $this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
 
         // QS files
         $files = ['/.editorconfig', '/phpcs.xml'];
@@ -287,6 +290,28 @@ class Installer extends LaravelInstaller
                 file_get_contents($stub)
             );
         }
+
+        $contents = file_get_contents($this->appFolder . '/app/Providers/RouteServiceProvider.php');
+        $this->command->cwdDisk->put(
+            $this->appFolder . '/app/Providers/RouteServiceProvider.php',
+            str_replace('/home', '/', $contents)
+        );
+
+        $contents = file_get_contents($this->appFolder . '/app/Http/Kernel.php');
+        $contents = str_replace(
+            '\Illuminate\Routing\Middleware\ThrottleRequests::class.',
+            '\Illuminate\Routing\Middleware\ThrottleRequests::class . ',
+            $contents
+        );
+        if ($this->installHelpersCollection) {
+            $contents = str_replace(
+                '\Illuminate\Routing\Middleware\ThrottleRequests::class',
+                '\NormanHuth\HelpersLaravel\App\Http\Middleware\ForceJsonResponse::class,' .
+                "\n            \Illuminate\Routing\Middleware\ThrottleRequests::class",
+                $contents
+            );
+        }
+        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Kernel.php', $contents);
     }
 
     /**
@@ -308,10 +333,16 @@ class Installer extends LaravelInstaller
             'no'
         );
 
-        $this->installIdeHelper = $this->command->confirm('Install IDE Helper Generator for Laravel?', $this->installIdeHelper);
-        $this->installHelpersCollection = $this->command->confirm('Install IDE norman-huth/helpers-collection-laravel?', $this->installHelpersCollection);
+        $this->installIdeHelper = $this->command->confirm(
+            'Install IDE Helper Generator for Laravel?',
+            $this->installIdeHelper
+        );
+        $this->installHelpersCollection = $this->command->confirm(
+            'Install IDE norman-huth/helpers-collection-laravel?',
+            $this->installHelpersCollection
+        );
         $this->installTailwindCss = $this->command->confirm('Install Tailwind CSS?', true);
-        $this->useScss = $this->command->confirm('Use SCSS instead of CSS?', true);
+        $this->useScss = $this->command->confirm('Use SCSS instead of CSS?', $this->useScss);
         if ($this->installInertia) {
             $this->installHeadlessUi = $this->command->confirm('Install HeadlessUI VUE?', true);
             $this->installEslint = $this->command->confirm('Install ESLint?', true);

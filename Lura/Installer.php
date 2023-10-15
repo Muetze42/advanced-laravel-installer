@@ -281,6 +281,13 @@ class Installer extends LaravelInstaller
             $contents = str_replace('<body>', '<body class="antialiased">', $contents);
         }
         $name = $this->installInertia ? 'app' : 'layout';
+        if (!$this->installInertia) {
+            $contents = str_replace(
+                ['@inertiaHead', '@inertia'],
+                ['<!-- meta description etc. -->', '@yield(\'content\')'],
+                $contents
+            );
+        }
         $this->command->cwdDisk->put($this->appFolder . '/resources/views/' . $name . '.blade.php', $contents);
 
         $stubs = glob(dirname(__DIR__) . '/storage/stubs/*.stub');

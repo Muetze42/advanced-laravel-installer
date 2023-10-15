@@ -28,7 +28,7 @@ class Installer extends LaravelInstaller
      */
     protected function afterComposerInstall(): void
     {
-       parent::afterComposerInstall();
+        parent::afterComposerInstall();
         if ($this->installInertia) {
             $installNovaNpmDependencies = $this->command->choice(
                 'Would You like install NPM dependencies and compile the assets?',
@@ -36,7 +36,8 @@ class Installer extends LaravelInstaller
                     'no',
                     'Yes with NPM',
                     'Yes with PNPM',
-                ]
+                ],
+                0
             );
 
             if ($installNovaNpmDependencies == 'Yes with NPM') {
@@ -278,6 +279,14 @@ class Installer extends LaravelInstaller
         }
         $name = $this->installInertia ? 'app' : 'layout';
         $this->command->cwdDisk->put($this->appFolder . '/resources/views/' . $name . '.blade.php', $contents);
+
+        $stubs = glob(dirname(__DIR__) . '/storage/stubs/*.stub');
+        foreach ($stubs as $stub) {
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/stubs/' . basename($stub),
+                file_get_contents($stub)
+            );
+        }
     }
 
     /**

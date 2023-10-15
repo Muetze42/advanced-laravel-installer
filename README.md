@@ -11,6 +11,7 @@ the following changes:
 * Add [ESLint](https://eslint.org) option
 * Add [IDE Helper Generator for Laravel](https://github.com/barryvdh/laravel-ide-helper) option
 * Add [Sass](https://sass-lang.com) as default stylesheet by default option
+* Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
 * Automatic add [phpcs.xml](storage/phpcs.xml) file
 * Change [.editorconfig](storage/.editorconfig) file
 

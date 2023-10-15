@@ -1,0 +1,16 @@
+{
+    "name": "norman-huth/advanced-laravel-installer",
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "norman-huth/laravel-installer": "^1.0.7",
+        "norman-huth/lura": "^1.0"
+    },
+    "scripts": {
+        "post-package-install": [
+            "lura register norman-huth/advanced-laravel-installer"
+        ]
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

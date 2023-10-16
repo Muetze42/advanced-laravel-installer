@@ -2,6 +2,8 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 
+use Illuminate\Support\Str;
+
 define('LARAVEL_INSTALLER_DIR', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'laravel-installer');
 
 require LARAVEL_INSTALLER_DIR . DIRECTORY_SEPARATOR . 'Lura' . DIRECTORY_SEPARATOR . 'LaravelInstaller.php';
@@ -48,6 +50,16 @@ class Installer extends LaravelInstaller
                 $this->runCommand('pnpm i && pnpm run build');
             }
         }
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getRepoSlug(string $name): string
+    {
+        return Str::lower(parent::getRepoSlug($name));
     }
 
     /**

@@ -22,6 +22,7 @@ the following changes:
 * Automatic add [phpcs.xml](storage/phpcs.xml) file
 * Change [.editorconfig](storage/.editorconfig) file
 * Add [Model](storage/stubs/model.stub) and [Migration \(Create\)](storage/stubs/migration.create.stub) stubs
+* Transform target directory to lower cases
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
 I create each of my Laravel applications with this installer to save time on initial setup.

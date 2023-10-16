@@ -14,16 +14,20 @@ the following changes:
 * Add „[Sass](https://sass-lang.com) instead of CSS“ option
 * Add [norman-huth/helpers-collection-laravel](https://github.com/Muetze42/helpers-collection-laravel) option
 * Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
-* [Exception handler](storage/Handler.php) response as JSON on API path
+* [Exception handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L46) response
+  as JSON on API path
 * Set application's "home" route to `/`
   in [RouteServiceProvider](https://github.com/laravel/laravel/blob/10.x/app/Providers/RouteServiceProvider.php#L20)
 * Add `ForceJsonResponse` middleware for API routes if `norman-huth/helpers-collection-laravel` selected to install
 * Add optional [pnpm](https://pnpm.io/) / [npm](https://www.npmjs.com/) dependencies installation and assets compiling
-* Automatic add [phpcs.xml](storage/phpcs.xml) file
-* Change [.editorconfig](storage/.editorconfig) file
-* Add [Model](storage/stubs/model.stub) and [Migration \(Create\)](storage/stubs/migration.create.stub) stubs
+* Automatic add [phpcs.xml](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/phpcs.xml) file
+* Change [.editorconfig](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/.editorconfig) file
+* Add [Model](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/stubs/model.stub)
+  and [Migration \(Create\)](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/stubs/migration.create.stub)
+  stubs
 * Transform target directory to lower cases
-* Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`
+* Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`()<br>
+  \([Exception Handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L56) & [Authenticate Middleware](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Authenticate.php#L16)\)
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
 I create each of my Laravel applications with this installer to save time on initial setup.

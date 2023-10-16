@@ -26,7 +26,7 @@ the following changes:
   and [Migration \(Create\)](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/stubs/migration.create.stub)
   stubs
 * Transform target directory to lower cases
-* Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`()<br>
+* Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`<br>
   \([Exception Handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L56) & [Authenticate Middleware](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Authenticate.php#L16)\)
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  

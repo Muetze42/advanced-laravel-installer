@@ -2,8 +2,13 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Response;
 use Throwable;
+use Illuminate\Support\Facades\Route;
 
 class Handler extends ExceptionHandler
 {
@@ -39,5 +44,28 @@ class Handler extends ExceptionHandler
     protected function shouldReturnJson($request, Throwable $e): bool
     {
         return $request->expectsJson() || str_starts_with(trim($request->path(), '/'), 'api');
+    }
+
+    /**
+     * Convert an authentication exception into a response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     */
+    public function unauthenticated(
+        $request,
+        AuthenticationException $exception
+    ): Response|JsonResponse|RedirectResponse {
+        if ($this->shouldReturnJson($request, $exception)) {
+            return response()->json(['message' => $exception->getMessage()], 401);
+        }
+        if ($redirectTo = $exception->redirectTo()) {
+            return redirect()->guest($redirectTo);
+        }
+        if (Route::has('login')) {
+            return redirect()->guest(route('login'));
+        }
+        abort(401);
     }
 }

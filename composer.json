@@ -3,8 +3,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "norman-huth/laravel-installer": "^2.0",
-        "norman-huth/lura": "^1.0"
+        "norman-huth/laravel-installer": "^2.0"
     },
     "scripts": {
         "post-package-install": [

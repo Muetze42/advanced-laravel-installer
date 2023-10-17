@@ -25,7 +25,7 @@ the following changes:
 * Add [Model](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/stubs/model.stub)
   and [Migration \(Create\)](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/stubs/migration.create.stub)
   stubs
-* Add [other stubs](https://github.com/Muetze42/advanced-laravel-installer/tree/main/storage/stubs) [psr-12 „4.2 Using traits“](https://www.php-fig.org/psr/psr-12/#42-using-traits) formatted
+* Add [other stubs](https://github.com/Muetze42/advanced-laravel-installer/tree/main/storage/stubs): [psr-12 „4.2 Using traits“](https://www.php-fig.org/psr/psr-12/#42-using-traits) formatted
 * Transform target directory to lower cases
 * Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`<br>
   \([Exception Handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L56) & [Authenticate Middleware](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Authenticate.php#L16)\)

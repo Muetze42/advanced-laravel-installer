@@ -30,6 +30,7 @@ the following changes:
 * Throw an 404 `HttpException` if route `login` not exist instead an `RouteNotFoundException`<br>
   \([Exception Handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L56) & [Authenticate Middleware](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Authenticate.php#L16)\)
 * Add Logging Channel `debug`
+* Copy [lang](https://github.com/laravel/framework/tree/10.x/src/Illuminate/Translation/lang/en) directory into the project after composer install
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
 I create each of my Laravel applications with this installer to save time on initial setup.

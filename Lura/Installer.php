@@ -2,7 +2,7 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 
-use Illuminate\Support\Str;
+use NormanHuth\Helpers\Str;
 
 define('LARAVEL_INSTALLER_DIR', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'laravel-installer');
 
@@ -50,6 +50,13 @@ class Installer extends LaravelInstaller
                 $this->runCommand('pnpm i && pnpm run build');
             }
         }
+
+        $this->command->filesystem->copyDirectory(
+            $this->command->cwdDisk->path(
+                $this->appFolder . '/vendor/laravel/framework/src/Illuminate/Translation/lang'
+            ),
+            $this->command->cwdDisk->path($this->appFolder . '/lang')
+        );
     }
 
     /**
@@ -71,13 +78,13 @@ class Installer extends LaravelInstaller
         $requirements = data_get($composerJson, 'require', []);
         $devRequirements = data_get($composerJson, 'require-dev', []);
         if ($this->installIdeHelper) {
-            $devRequirements = static::addPackage($devRequirements, 'barryvdh/laravel-ide-helper', '*');
+             static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
         }
         if ($this->installHelpersCollection) {
-            $requirements = static::addPackage(
-                $requirements,
+            static::addDependency(
+                $devRequirements,
                 'norman-huth/helpers-collection-laravel',
-                '^v1.1.7'
+                'v1.1.7'
             );
         }
 
@@ -93,11 +100,7 @@ class Installer extends LaravelInstaller
         $dependencies = data_get($packageJson, 'dependencies', []);
 
         // Update Axios
-        $devDependencies = static::addPackage(
-            $devDependencies,
-            'axios',
-            $this->formatVersion('axios', '^1.5.1')
-        );
+        static::addDependency($devRequirements, 'axios', '1.5.1');
 
         // bootstrap.js prettier
         $contents = file_get_contents(dirname(__DIR__) . '/storage/bootstrap.js');
@@ -125,21 +128,9 @@ class Installer extends LaravelInstaller
         }
 
         if ($this->installFontAwesome != 'no') {
-            $dependencies = static::addPackage(
-                $dependencies,
-                '@fortawesome/vue-fontawesome',
-                $this->formatVersion('@fortawesome/vue-fontawesome', '3.0.3')
-            );
-            $dependencies = static::addPackage(
-                $dependencies,
-                '@fortawesome/fontawesome-svg-core',
-                $this->formatVersion('@fortawesome/fontawesome-svg-core', '6.4.2')
-            );
-            $dependencies = static::addPackage(
-                $dependencies,
-                '@fortawesome/free-brands-svg-icons',
-                $this->formatVersion('@fortawesome/free-brands-svg-icons', '6.4.2')
-            );
+            static::addDependency($dependencies, '@fortawesome/vue-fontawesome', '3.0.3');
+            static::addDependency($dependencies, '@fortawesome/fontawesome-svg-core', '6.4.2');
+            static::addDependency($dependencies, '@fortawesome/free-brands-svg-icons', '6.4.2');
         }
 
         if ($this->installFontAwesome == 'Pro') {
@@ -150,21 +141,13 @@ class Installer extends LaravelInstaller
                 'pro-solid-svg-icons',
             ];
             foreach ($items as $item) {
-                $dependencies = static::addPackage(
-                    $dependencies,
-                    '@fortawesome/' . $item,
-                    $this->formatVersion('@fortawesome/' . $item, '6.4.2')
-                );
+                static::addDependency($dependencies, '@fortawesome/' . $item, '6.4.2');
             }
         }
         if ($this->installFontAwesome == 'Free') {
             $items = ['free-regular-svg-icons', 'free-solid-svg-icons'];
             foreach ($items as $item) {
-                $dependencies = static::addPackage(
-                    $dependencies,
-                    '@fortawesome/' . $item,
-                    $this->formatVersion('@fortawesome/' . $item, '6.4.2')
-                );
+                static::addDependency($dependencies, '@fortawesome/' . $item, '6.4.2');
             }
         }
 
@@ -189,44 +172,16 @@ class Installer extends LaravelInstaller
             $contents = str_replace('resources/css/app.css', 'resources/scss/app.scss', $contents);
             $this->command->cwdDisk->put($viteConfig, $contents);
 
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'sass',
-                $this->formatVersion('sass', '1.69.3')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'sass-loader',
-                $this->formatVersion('sass-loader"', '13.3.2')
-            );
+            static::addDependency($dependencies, 'sass', '1.69.3');
+            static::addDependency($dependencies, 'sass-loader', '13.3.2');
         }
 
         if ($this->installTailwindCss) {
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'tailwindcss',
-                $this->formatVersion('tailwindcss', '3.3.3')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'postcss',
-                $this->formatVersion('postcss', '8.4.3')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'autoprefixer',
-                $this->formatVersion('autoprefixer', '10.4.1')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                '@tailwindcss/forms',
-                $this->formatVersion('@tailwindcss/forms', '0.5.6')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'tailwind-scrollbar',
-                $this->formatVersion('tailwind-scrollbar', '3.0.5')
-            );
+            static::addDependency($devDependencies, 'tailwindcss', '3.3.3');
+            static::addDependency($devDependencies, 'postcss', '8.4.3');
+            static::addDependency($devDependencies, 'autoprefixer', '10.4.1');
+            static::addDependency($devDependencies, '@tailwindcss/forms', '0.5.6');
+            static::addDependency($devDependencies, 'tailwind-scrollbar', '3.0.5');
 
             $files = ['/postcss.config.js', '/tailwind.config.js'];
             foreach ($files as $file) {
@@ -240,39 +195,19 @@ class Installer extends LaravelInstaller
         }
 
         if ($this->installHeadlessUi) {
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                '@headlessui/vue',
-                $this->formatVersion('@headlessui/vue', '1.7.16')
-            );
+            static::addDependency($devDependencies, '@headlessui/vue', '1.7.16');
         }
 
         if ($this->installEslint) {
-            $devDependencies = static::addPackage(
+            static::addDependency(
                 $devDependencies,
                 '@babel/plugin-syntax-dynamic-import',
-                $this->formatVersion('@babel/plugin-syntax-dynamic-import', '7.8.3')
+                '7.8.3'
             );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                '@vue/eslint-config-prettier',
-                $this->formatVersion('@vue/eslint-config-prettier', '8.0.0')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'eslint',
-                $this->formatVersion('eslint', '8.51.0')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                'eslint-plugin-vue',
-                $this->formatVersion('eslint-plugin-vue', '9.17.0')
-            );
-            $devDependencies = static::addPackage(
-                $devDependencies,
-                '@rushstack/eslint-patch',
-                $this->formatVersion('@rushstack/eslint-patch', '1.5.1')
-            );
+            static::addDependency($devDependencies, '@vue/eslint-config-prettier', '8.0.0');
+            static::addDependency($devDependencies, 'eslint', '8.51.0');
+            static::addDependency($devDependencies, 'eslint-plugin-vue', '9.17.0');
+            static::addDependency($devDependencies, '@rushstack/eslint-patch', '1.5.1');
 
             $files = ['/.eslintignore', '/.eslintrc.cjs', '/.prettierignore', '/.prettierrc.yaml'];
             foreach ($files as $file) {

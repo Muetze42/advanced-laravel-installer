@@ -33,6 +33,7 @@ the following changes:
 * Copy [lang](https://github.com/laravel/framework/tree/10.x/src/Illuminate/Translation/lang/en) directory into the project after composer install
 * Add [norman-huth/nova-assets-versioning](https://github.com/Muetze42/nova-assets-versioning) if install [Laravel Nova](https://nova.laravel.com/)
 * Add [Laravel-activitylog](https://spatie.be/docs/laravel-activitylog) option
+* Add [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) option
 * Publish and customize diverse configs and migration
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  

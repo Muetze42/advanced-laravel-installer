@@ -43,6 +43,7 @@ class Installer extends LaravelInstaller
 
         $this->runCommand('php artisan session:table');
         $this->runCommand('php artisan queue:table');
+
         if ($this->installActivitylog) {
             $command = [
                 'php artisan vendor:publish',
@@ -76,6 +77,34 @@ class Installer extends LaravelInstaller
             );
         }
 
+        if ($this->installMedialibrary) {
+            $command = [
+                'php artisan vendor:publish',
+                '--provider="Spatie\MediaLibrary\MediaLibraryServiceProvider"',
+                '--tag="migrations"',
+            ];
+            $this->runCommand(implode(' ', $command));
+            $command = [
+                'php artisan vendor:publish',
+                '--provider="Spatie\MediaLibrary\MediaLibraryServiceProvider"',
+                '--tag="config"',
+            ];
+            $this->runCommand(implode(' ', $command));
+            if ($this->installHelpersCollection) {
+                $file = $this->appFolder . '/config/media-library.php';
+                $contents = file_get_contents($file);
+                $contents = str_replace(
+                    'Spatie\\MediaLibrary\\Support\\PathGenerator\\DefaultPathGenerator::class',
+                    'NormanHuth\\HelpersLaravel\\Spatie\\MediaLibrary\\CustomPathGenerator::class',
+                    $contents
+                );
+                $this->command->cwdDisk->put(
+                    $file,
+                    $contents
+                );
+            }
+        }
+
         // Publish new Sanctum config
         $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
         $this->runCommand('php artisan vendor:publish --tag=sanctum-config');
@@ -88,7 +117,12 @@ class Installer extends LaravelInstaller
     {
         $migrations = $this->command->cwdDisk->allFiles($this->appFolder . '/database/migrations');
 
-        $rename = ['create_sessions_table.php', 'create_jobs_table.php'];
+        $rename = [
+            'create_sessions_table.php',
+            'create_jobs_table.php',
+            'create_activity_log_table.php',
+            'create_media_table.php',
+        ];
         foreach ($migrations as $migration) {
             $migration = basename($migration);
             $name = substr($migration, 18);
@@ -161,6 +195,9 @@ class Installer extends LaravelInstaller
         }
         if ($this->installActivitylog) {
             static::addDependency($requirements, 'spatie/laravel-activitylog', '4.7');
+        }
+        if ($this->installMedialibrary) {
+            static::addDependency($requirements, 'spatie/laravel-medialibrary', '10.13');
         }
 
         data_set($composerJson, 'require-dev', $devRequirements);

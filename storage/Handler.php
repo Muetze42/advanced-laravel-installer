@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
      */
     protected function shouldReturnJson($request, Throwable $e): bool
     {
-        return $request->expectsJson() || str_starts_with(trim($request->path(), '/'), 'api');
+        return $request->expectsJson() || str_starts_with(trim($request->path(), '/') . '/', 'api/');
     }
 
     /**

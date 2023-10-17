@@ -20,6 +20,7 @@ class Installer extends LaravelInstaller
     protected bool $useScss = true;
     protected bool $installActivitylog = false;
     protected bool $installMedialibrary = false;
+    protected bool $installErrorPages = true;
 
     protected function setStorageDisk(): void
     {
@@ -100,6 +101,27 @@ class Installer extends LaravelInstaller
                 );
                 $this->command->cwdDisk->put(
                     $file,
+                    $contents
+                );
+            }
+        }
+
+        if ($this->installErrorPages) {
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/error-pages/error-pages.css');
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/public/css/error-pages.css',
+                $contents
+            );
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/error-pages/minimal.blade.php');
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/resources/views/errors/minimal.blade.php',
+                $contents
+            );
+            $files = glob(dirname(__DIR__) . '/storage/error-pages/*.svg');
+            foreach ($files as $file) {
+                $contents = file_get_contents($file);
+                $this->command->cwdDisk->put(
+                    $this->appFolder . '/public/assets/' . basename($file),
                     $contents
                 );
             }
@@ -430,6 +452,11 @@ class Installer extends LaravelInstaller
         $this->installMedialibrary = $this->command->confirm(
             'Install spatie/laravel-medialibrary?',
             $this->installMedialibrary
+        );
+
+        $this->installErrorPages = $this->command->confirm(
+            'Install custom error pages?',
+            $this->installErrorPages
         );
     }
 

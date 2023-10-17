@@ -31,6 +31,48 @@ class Installer extends LaravelInstaller
     protected function afterComposerInstall(): void
     {
         parent::afterComposerInstall();
+
+        $this->command->filesystem->copyDirectory(
+            $this->command->cwdDisk->path(
+                $this->appFolder . '/vendor/laravel/framework/src/Illuminate/Translation/lang'
+            ),
+            $this->command->cwdDisk->path($this->appFolder . '/lang')
+        );
+
+        $this->runCommand('php artisan session:table');
+        $this->runCommand('php artisan queue:table');
+
+        // Publish new Sanctum config
+        $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
+        $this->runCommand('php artisan vendor:publish --tag=sanctum-config');
+
+        $this->renameMigrations();
+        $this->npmDependencies();
+    }
+
+    protected function renameMigrations(): void
+    {
+        $migrations = $this->command->cwdDisk->allFiles($this->appFolder . '/database/migrations');
+
+        $rename = ['create_sessions_table.php', 'create_jobs_table.php'];
+        foreach ($migrations as $migration) {
+            $migration = basename($migration);
+            $name = substr($migration, 18);
+            if (!in_array($name, $rename)) {
+                continue;
+            }
+            $this->command->cwdDisk->move(
+                $this->appFolder . '/database/migrations/' . $migration,
+                $this->appFolder . '/database/migrations/' . substr($migration, 0, 11) . '000000_' . $name,
+            );
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function npmDependencies(): void
+    {
         if ($this->installInertia) {
             $installNovaNpmDependencies = $this->command->choice(
                 'Would You like install NPM dependencies and compile the assets?',
@@ -50,13 +92,6 @@ class Installer extends LaravelInstaller
                 $this->runCommand('pnpm i && pnpm run build');
             }
         }
-
-        $this->command->filesystem->copyDirectory(
-            $this->command->cwdDisk->path(
-                $this->appFolder . '/vendor/laravel/framework/src/Illuminate/Translation/lang'
-            ),
-            $this->command->cwdDisk->path($this->appFolder . '/lang')
-        );
     }
 
     /**

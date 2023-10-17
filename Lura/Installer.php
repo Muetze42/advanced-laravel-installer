@@ -18,6 +18,8 @@ class Installer extends LaravelInstaller
     protected bool $installEslint = true;
     protected bool $installHelpersCollection = true;
     protected bool $useScss = true;
+    protected bool $installActivitylog = false;
+    protected bool $installMedialibrary = false;
 
     protected function setStorageDisk(): void
     {
@@ -41,6 +43,38 @@ class Installer extends LaravelInstaller
 
         $this->runCommand('php artisan session:table');
         $this->runCommand('php artisan queue:table');
+        if ($this->installActivitylog) {
+            $command = [
+                'php artisan vendor:publish',
+                '--provider="Spatie\Activitylog\ActivitylogServiceProvider"',
+                '--tag="activitylog-config"',
+            ];
+            $this->runCommand(implode(' ', $command));
+
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/activity-log/migration.stub');
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/database/migrations/' . $this->getMigrationFileName('CreateActivityLogTable'),
+                $contents
+            );
+
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/activity-log/model.stub');
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/app/Models/Activity.php',
+                $contents
+            );
+
+            $file = $this->appFolder . '/config/activitylog.php';
+            $contents = file_get_contents($file);
+            $contents = str_replace(
+                'Spatie\\Activitylog\\Models\\Activity::class',
+                'App\\Models\\Activity::class',
+                $contents
+            );
+            $this->command->cwdDisk->put(
+                $file,
+                $contents
+            );
+        }
 
         // Publish new Sanctum config
         $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
@@ -113,7 +147,7 @@ class Installer extends LaravelInstaller
         $requirements = data_get($composerJson, 'require', []);
         $devRequirements = data_get($composerJson, 'require-dev', []);
         if ($this->installIdeHelper) {
-             static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
+            static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
         }
         if ($this->installHelpersCollection) {
             static::addDependency(
@@ -124,6 +158,9 @@ class Installer extends LaravelInstaller
         }
         if ($this->installNova) {
             static::addDependency($requirements, 'norman-huth/nova-assets-versioning', '1.0');
+        }
+        if ($this->installActivitylog) {
+            static::addDependency($requirements, 'spatie/laravel-activitylog', '4.7');
         }
 
         data_set($composerJson, 'require-dev', $devRequirements);
@@ -347,5 +384,25 @@ class Installer extends LaravelInstaller
             $this->installHeadlessUi = $this->command->confirm('Install HeadlessUI VUE?', $this->installHeadlessUi);
             $this->installEslint = $this->command->confirm('Install ESLint?', $this->installEslint);
         }
+
+        $this->installActivitylog = $this->command->confirm(
+            'Install spatie/laravel-activitylog?',
+            $this->installActivitylog
+        );
+
+        $this->installMedialibrary = $this->command->confirm(
+            'Install spatie/laravel-medialibrary?',
+            $this->installMedialibrary
+        );
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
+    protected function getMigrationFileName(string $name): string
+    {
+        return date('Y_m_d_') . '000000_' . Str::snake(trim($name, '_')) . '.php';
     }
 }

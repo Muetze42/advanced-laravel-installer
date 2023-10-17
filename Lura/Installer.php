@@ -87,6 +87,9 @@ class Installer extends LaravelInstaller
                 'v1.1.7'
             );
         }
+        if ($this->installNova) {
+            static::addDependency($requirements, 'norman-huth/nova-assets-versioning', '1.0');
+        }
 
         data_set($composerJson, 'require-dev', $devRequirements);
         data_set($composerJson, 'require', $requirements);

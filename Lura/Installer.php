@@ -11,11 +11,11 @@ require LARAVEL_INSTALLER_DIR . DIRECTORY_SEPARATOR . 'Lura' . DIRECTORY_SEPARAT
 class Installer extends LaravelInstaller
 {
     protected bool $installInertia = true;
-    protected string $installFontAwesome;
+    protected string $installFontAwesome = 'no';
     protected bool $installIdeHelper = true;
-    protected bool $installHeadlessUi = false;
-    protected bool $installTailwindCss;
-    protected bool $installEslint = false;
+    protected bool $installHeadlessUi = true;
+    protected bool $installTailwindCss = true;
+    protected bool $installEslint = true;
     protected bool $installHelpersCollection = true;
     protected bool $useScss = true;
 
@@ -330,7 +330,7 @@ class Installer extends LaravelInstaller
                 'Pro',
                 'Free',
             ],
-            'no'
+            $this->installFontAwesome
         );
 
         $this->installIdeHelper = $this->command->confirm(
@@ -341,11 +341,11 @@ class Installer extends LaravelInstaller
             'Install IDE norman-huth/helpers-collection-laravel?',
             $this->installHelpersCollection
         );
-        $this->installTailwindCss = $this->command->confirm('Install Tailwind CSS?', true);
+        $this->installTailwindCss = $this->command->confirm('Install Tailwind CSS?', $this->installTailwindCss);
         $this->useScss = $this->command->confirm('Use SCSS instead of CSS?', $this->useScss);
         if ($this->installInertia) {
-            $this->installHeadlessUi = $this->command->confirm('Install HeadlessUI VUE?', true);
-            $this->installEslint = $this->command->confirm('Install ESLint?', true);
+            $this->installHeadlessUi = $this->command->confirm('Install HeadlessUI VUE?', $this->installHeadlessUi);
+            $this->installEslint = $this->command->confirm('Install ESLint?', $this->installEslint);
         }
     }
 }

@@ -48,7 +48,7 @@ composer global require norman-huth/advanced-laravel-installer:"@dev"
 ### Don't forget to register the installer after install
 
 ```shell
-lura register norman-huth/laravel-installer
+lura register norman-huth/advanced-laravel-installer
 ```
 
 ## Run

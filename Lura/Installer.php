@@ -329,15 +329,40 @@ class Installer extends LaravelInstaller
             static::addDependency($devDependencies, '@tailwindcss/forms', '0.5.6');
             static::addDependency($devDependencies, 'tailwind-scrollbar', '3.0.5');
 
-            $files = ['/postcss.config.js', '/tailwind.config.js'];
+            $files[] = '/postcss.config.js';
+            $files[] = $this->useScss ? '/tailwind.config.scss.js' : '/tailwind.config.js';
             foreach ($files as $file) {
                 $contents = file_get_contents(dirname(__DIR__) . '/storage' . $file);
-                $this->command->cwdDisk->put($this->appFolder . $file, $contents);
+                $this->command->cwdDisk->put(
+                    $this->appFolder . str_replace('tailwind.config.scss.js', 'tailwind.config.js', $file),
+                    $contents)
+                ;
             }
 
             $stylesheet = "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n";
+            if ($this->useScss) {
+                $stylesheet.= "\n//@import \"fonts/inter-var\";\n//@import \"fonts/fira-code\";\n";
+            }
             $target = $this->useScss ? '/resources/scss/app.scss' : 'resources/css/app.css';
             $this->command->cwdDisk->put($this->appFolder . $target, $stylesheet);
+
+            $fonts = glob(dirname(__DIR__) . '/storage/fonts/*', GLOB_ONLYDIR);
+            foreach ($fonts as $font) {
+                $files = glob($font . '/*');
+                foreach ($files as $file) {
+                    $filename = basename($file);
+                    $target = str_ends_with($filename, '.scss') ? '/resources/scss/fonts/' :
+                        '/resources/fonts/' . basename($font) . '/';
+
+                    $this->command->info($this->appFolder . $target . $filename);
+
+                    $contents = file_get_contents($file);
+                    $this->command->cwdDisk->put(
+                        $this->appFolder . $target . $filename,
+                        $contents
+                    );
+                }
+            }
         }
 
         if ($this->installHeadlessUi) {

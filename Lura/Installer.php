@@ -91,19 +91,31 @@ class Installer extends LaravelInstaller
                 '--tag="config"',
             ];
             $this->runCommand(implode(' ', $command));
+            $file = $this->appFolder . '/config/media-library.php';
+
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/Media.php');
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/app/Models/Media.php',
+                $contents
+            );
+
+            $contents = file_get_contents($file);
             if ($this->installHelpersCollection) {
-                $file = $this->appFolder . '/config/media-library.php';
-                $contents = file_get_contents($file);
                 $contents = str_replace(
                     'Spatie\\MediaLibrary\\Support\\PathGenerator\\DefaultPathGenerator::class',
                     'NormanHuth\\HelpersLaravel\\Spatie\\MediaLibrary\\CustomPathGenerator::class',
                     $contents
                 );
-                $this->command->cwdDisk->put(
-                    $file,
-                    $contents
-                );
             }
+            $contents = str_replace(
+                'Spatie\\MediaLibrary\\MediaCollections\\Models\\Media::class',
+                'App\\Models\\Media::class',
+                $contents
+            );
+            $this->command->cwdDisk->put(
+                $file,
+                $contents
+            );
         }
 
         if ($this->installErrorPages) {

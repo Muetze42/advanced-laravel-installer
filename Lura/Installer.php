@@ -354,8 +354,6 @@ class Installer extends LaravelInstaller
                     $target = str_ends_with($filename, '.scss') ? '/resources/scss/fonts/' :
                         '/resources/fonts/' . basename($font) . '/';
 
-                    $this->command->info($this->appFolder . $target . $filename);
-
                     $contents = file_get_contents($file);
                     $this->command->cwdDisk->put(
                         $this->appFolder . $target . $filename,

@@ -22,6 +22,8 @@ class Installer extends LaravelInstaller
     protected bool $installMedialibrary = false;
     protected bool $installErrorPages = true;
 
+    protected bool $addProjectHelperFiles = false;
+
     protected function setStorageDisk(): void
     {
         $dir = LARAVEL_INSTALLER_DIR . DIRECTORY_SEPARATOR . 'storage';
@@ -236,6 +238,21 @@ class Installer extends LaravelInstaller
 
         data_set($composerJson, 'require-dev', $devRequirements);
         data_set($composerJson, 'require', $requirements);
+
+        if ($this->addProjectHelperFiles) {
+            data_set($composerJson, 'autoload.files', ['functions/helpers.php']);
+            data_set($composerJson, 'autoload-dev.files', ['functions/helpers-dev.php']);
+
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/functions/helpers.php',
+                "<?php\n"
+            );
+            $this->command->cwdDisk->put(
+                $this->appFolder . '/functions/helpers-dev.php',
+                "<?php\n"
+            );
+        }
+
         $this->command->cwdDisk->put(
             $this->appFolder . '/composer.json',
             json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
@@ -492,6 +509,11 @@ class Installer extends LaravelInstaller
         $this->installErrorPages = $this->command->confirm(
             'Install custom error pages?',
             $this->installErrorPages
+        );
+
+        $this->addProjectHelperFiles = $this->command->confirm(
+            'Add custom helper files for the project?',
+            $this->addProjectHelperFiles
         );
     }
 

@@ -283,8 +283,8 @@ class Installer extends LaravelInstaller
         $contents = str_replace("'slack' => [", $replace, $contents);
         $this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
 
-        // QS files
-        $files = ['/.editorconfig', '/phpcs.xml'];
+        // Files
+        $files = ['/.editorconfig', '/phpcs.xml', '/pint.json'];
         foreach ($files as $file) {
             $contents = file_get_contents(dirname(__DIR__) . '/storage' . $file);
             $this->command->cwdDisk->put($this->appFolder . $file, $contents);

@@ -33,6 +33,8 @@
             }
         },
         "class_definition": {
+            "space_before_parenthesis": true,
+            "inline_constructor_arguments": false,
             "multi_line_extends_each_single_line": true,
             "single_item_single_line": true,
             "single_line": true

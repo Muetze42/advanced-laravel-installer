@@ -147,6 +147,7 @@ class Installer extends LaravelInstaller
 
         $this->renameMigrations();
         $this->npmDependencies();
+        $this->runCommand('./vendor/bin/pint');
     }
 
     protected function renameMigrations(): void
@@ -252,6 +253,10 @@ class Installer extends LaravelInstaller
                 "<?php\n"
             );
         }
+
+        $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
+        $postUpdateCmdScripts[] = './vendor/bin/pint';
+        data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
 
         $this->command->cwdDisk->put(
             $this->appFolder . '/composer.json',

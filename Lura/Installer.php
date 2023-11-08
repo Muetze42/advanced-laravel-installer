@@ -289,7 +289,7 @@ class Installer extends LaravelInstaller
         $this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
 
         // Files
-        $files = ['/.editorconfig', '/phpcs.xml', '/pint.json', '/deploy.sh'];
+        $files = ['/.editorconfig', '/phpcs.xml', '/pint.json', '/deploy.sh', '/phpmd.xml'];
         foreach ($files as $file) {
             $contents = file_get_contents(dirname(__DIR__) . '/storage' . $file);
             $this->command->cwdDisk->put($this->appFolder . $file, $contents);

@@ -147,7 +147,6 @@ class Installer extends LaravelInstaller
 
         $this->renameMigrations();
         $this->npmDependencies();
-        $this->runCommand('./vendor/bin/pint');
     }
 
     protected function renameMigrations(): void
@@ -257,6 +256,14 @@ class Installer extends LaravelInstaller
         $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
         $postUpdateCmdScripts[] = './vendor/bin/pint';
         data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
+        $phpmdDirs = 'app,database,config,routes';
+        if ($this->addProjectHelperFiles) {
+            $phpmdDirs .= ',functions';
+        }
+        data_set($composerJson, 'scripts.code-quality', [
+            './vendor/bin/pint',
+            'phpmd ' . $phpmdDirs . ' text phpmd.xml'
+        ]);
 
         $this->command->cwdDisk->put(
             $this->appFolder . '/composer.json',
@@ -366,13 +373,14 @@ class Installer extends LaravelInstaller
                 $contents = file_get_contents(dirname(__DIR__) . '/storage' . $file);
                 $this->command->cwdDisk->put(
                     $this->appFolder . str_replace('tailwind.config.scss.js', 'tailwind.config.js', $file),
-                    $contents)
+                    $contents
+                )
                 ;
             }
 
             $stylesheet = "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n";
             if ($this->useScss) {
-                $stylesheet.= "\n//@import \"fonts/inter-var\";\n//@import \"fonts/fira-code\";\n";
+                $stylesheet .= "\n//@import \"fonts/inter-var\";\n//@import \"fonts/fira-code\";\n";
             }
             $target = $this->useScss ? '/resources/scss/app.scss' : 'resources/css/app.css';
             $this->command->cwdDisk->put($this->appFolder . $target, $stylesheet);

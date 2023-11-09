@@ -265,6 +265,13 @@ class Installer extends LaravelInstaller
             'phpmd ' . $phpmdDirs . ' text phpmd.xml'
         ]);
 
+        $description = data_get($composerJson, 'description', '');
+        if ($description && !str_ends_with($description, '.')) {
+            $description .= '.';
+        }
+        $description .= ' Created with norman-huth/advanced-laravel-installer.';
+        data_set($composerJson, 'description', trim($description));
+
         $this->command->cwdDisk->put(
             $this->appFolder . '/composer.json',
             json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)

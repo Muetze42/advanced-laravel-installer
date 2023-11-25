@@ -235,6 +235,7 @@ class Installer extends LaravelInstaller
         if ($this->installMedialibrary) {
             static::addDependency($requirements, 'spatie/laravel-medialibrary', '10.13');
         }
+        static::addDependency($devRequirements, 'laravel/dusk', '7.11');
 
         data_set($composerJson, 'require-dev', $devRequirements);
         data_set($composerJson, 'require', $requirements);

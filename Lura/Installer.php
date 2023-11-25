@@ -46,6 +46,7 @@ class Installer extends LaravelInstaller
 
         $this->runCommand('php artisan session:table');
         $this->runCommand('php artisan queue:table');
+        $this->runCommand('php artisan dusk:install');
 
         if ($this->installActivitylog) {
             $command = [
@@ -145,8 +146,30 @@ class Installer extends LaravelInstaller
         $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
         $this->runCommand('php artisan vendor:publish --tag=sanctum-config');
 
+        $this->updateTestCase();
         $this->renameMigrations();
+        $this->runCommand($this->command->composer . ' pint');
         $this->npmDependencies();
+    }
+
+    protected function updateTestCase(): void
+    {
+        $file = $this->appFolder . '/tests/TestCase.php';
+        if (!$this->command->cwdDisk->exists($file)) {
+            $this->command->warn('Don not update `tests/TestCase.php`');
+            return;
+        }
+        $testCase = $this->command->cwdDisk->path($file);
+        $md5 = md5_file($testCase);
+        $source = dirname(__DIR__) . '/storage/test-case/' . $md5 . '.stub';
+        if (!file_exists($source)) {
+            $this->command->warn('Don not update `tests/TestCase.php`');
+            return;
+        }
+        file_put_contents(
+            $testCase,
+            file_get_contents($source)
+        );
     }
 
     protected function renameMigrations(): void
@@ -254,13 +277,19 @@ class Installer extends LaravelInstaller
             );
         }
 
-        $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
-        $postUpdateCmdScripts[] = './vendor/bin/pint';
-        data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
+//        $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
+//        $postUpdateCmdScripts[] = './vendor/bin/pint';
+//        data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
         $phpmdDirs = 'app,database,config,routes';
         if ($this->addProjectHelperFiles) {
             $phpmdDirs .= ',functions';
         }
+        data_set($composerJson, 'scripts.phpmd', [
+            'phpmd ' . $phpmdDirs . ' text phpmd.xml'
+        ]);
+        data_set($composerJson, 'scripts.pint', [
+            './vendor/bin/pint',
+        ]);
         data_set($composerJson, 'scripts.code-quality', [
             './vendor/bin/pint',
             'phpmd ' . $phpmdDirs . ' text phpmd.xml'

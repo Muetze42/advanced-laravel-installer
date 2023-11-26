@@ -15,12 +15,6 @@ abstract class TestCase extends BaseTestCase
     use RefreshDatabase;
     use WithFaker;
 
-    public function __construct(string $name)
-    {
-        $this->setUpFaker();
-        parent::__construct($name);
-    }
-
     public function login(User $user = null): User
     {
         $user ??= User::factory()->create();

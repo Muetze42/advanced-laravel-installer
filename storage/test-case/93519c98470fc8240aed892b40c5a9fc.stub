@@ -7,11 +7,19 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
+use Illuminate\Foundation\Testing\WithFaker;
 
 abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
     use RefreshDatabase;
+    use WithFaker;
+
+    public function __construct(string $name)
+    {
+        $this->setUpFaker();
+        parent::__construct($name);
+    }
 
     public function login(User $user = null): User
     {

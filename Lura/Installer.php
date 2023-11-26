@@ -145,14 +145,13 @@ class Installer extends LaravelInstaller
         // Publish new Sanctum config
         $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
         $this->runCommand('php artisan vendor:publish --tag=sanctum-config');
-
-        $this->updateTestCase();
+        $this->updateTesting();
         $this->renameMigrations();
         $this->runCommand($this->command->composer . ' pint');
         $this->npmDependencies();
     }
 
-    protected function updateTestCase(): void
+    protected function updateTesting(): void
     {
         $file = $this->appFolder . '/tests/TestCase.php';
         if (!$this->command->cwdDisk->exists($file)) {
@@ -169,6 +168,21 @@ class Installer extends LaravelInstaller
         file_put_contents(
             $testCase,
             file_get_contents($source)
+        );
+        $file = $this->appFolder . '/phpunit.xml';
+        file_put_contents(
+            $this->command->cwdDisk->path($file),
+            str_replace(
+                [
+                    '<!-- <env name="DB_CONNECTION" value="sqlite"/> -->',
+                    '<!-- <env name="DB_DATABASE" value=":memory:"/> -->'
+                ],
+                [
+                    '<env name="DB_CONNECTION" value="sqlite"/>',
+                    '<env name="DB_DATABASE" value=":memory:"/>'
+                ],
+                $this->command->cwdDisk->get($file)
+            )
         );
     }
 

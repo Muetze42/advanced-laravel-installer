@@ -16,7 +16,7 @@ the following changes:
 * Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
 * [Exception handler](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/Handler.php#L46) response
   as JSON on API path
-* Set application's "home" route to `/`
+* Set application's `home` route to `/`
   in [RouteServiceProvider](https://github.com/laravel/laravel/blob/10.x/app/Providers/RouteServiceProvider.php#L20)
 * Add `ForceJsonResponse` middleware for API routes if `norman-huth/helpers-collection-laravel` selected to install
 * Add optional [pnpm](https://pnpm.io/) / [npm](https://www.npmjs.com/) dependencies installation and assets compiling
@@ -35,9 +35,20 @@ the following changes:
 * Add [Laravel-activitylog](https://spatie.be/docs/laravel-activitylog) option
 * Add [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) option
 * Publish and customize diverse configs and migration
+* Install [Laravel Dusk](https://laravel.com/docs/10.x/dusk) for development
+* Add [Laravel Pint](https://laravel.com/docs/10.x/pint) file with [PSR-12](https://www.php-fig.org/psr/psr-12/) 
+  configuration ([Rules](storage/pint.json))
+* Extend [TestCase](storage/test-case/93519c98470fc8240aed892b40c5a9fc.stub)
+* Add Laravel Pint and [PHPMD](https://phpmd.org/) as Composer script
+* Add custom error pages option
+* Add Fonts ([Inter](https://github.com/rsms/inter) & [Fira Code](https://github.com/tonsky/FiraCode))
+* Add helper files option
+* Uncomment database setting in the `phpunit.xml` file
+* Run Laravel Pint after installation
+* Add `deploy.sh`, `.php-cs-fixer.cache`, `/deploy/*.sh` to `.gitignore`
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
-I create each of my Laravel applications with this installer to save time on initial setup.
+I create each of my Laravel applications with this installer to save time on an initial setup.
 
 ## Install
 
@@ -60,5 +71,3 @@ lura
 ---
 
 [![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/banner2-direct.svg)](https://vshymanskyy.github.io/StandWithUkraine/)
-
-[![Woman. Life. Freedom.](https://raw.githubusercontent.com/Muetze42/Muetze42/2033b219c6cce0cb656c34da5246434c27919bcd/files/iran-banner-big.svg)](https://linktr.ee/CurrentPetitionsFreeIran)

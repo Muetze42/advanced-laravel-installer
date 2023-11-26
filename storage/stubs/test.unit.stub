@@ -3,17 +3,15 @@
 // @codingStandardsIgnoreStart
 namespace {{ namespace }};
 
-use Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class {{ class }} extends TestCase
 {
     /**
-     * A basic feature test example.
+     * A basic unit test example.
      */
     public function test_example(): void
     {
-        $response = $this->get('/');
-
-        $response->assertStatus(200);
+        $this->assertTrue(true);
     }
 }

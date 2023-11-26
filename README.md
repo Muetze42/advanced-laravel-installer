@@ -35,16 +35,16 @@ the following changes:
 * Add [Laravel-activitylog](https://spatie.be/docs/laravel-activitylog) option
 * Add [Laravel-medialibrary](https://spatie.be/docs/laravel-medialibrary) option
 * Publish and customize diverse configs and migration
-* Install [Laravel Dusk](https://laravel.com/docs/10.x/dusk) for development
-* Add [Laravel Pint](https://laravel.com/docs/10.x/pint) file with [PSR-12](https://www.php-fig.org/psr/psr-12/) 
-  configuration ([Rules](storage/pint.json))
-* Extend [TestCase](storage/test-case/93519c98470fc8240aed892b40c5a9fc.stub)
-* Add Laravel Pint and [PHPMD](https://phpmd.org/) as Composer script
+* Install [Laravel Dusk](https://laravel.com/docs/dusk) for development
+* Add [Laravel Pint](https://laravel.com/docs/pint) file with [PSR-12](https://www.php-fig.org/psr/psr-12/) 
+  configuration ([Rules](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/pint.json))
+* Extend [TestCase](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/test-case/93519c98470fc8240aed892b40c5a9fc.stub)
+* Add [Laravel Pint](https://laravel.com/docs/pint) and [PHPMD](https://phpmd.org/) as Composer script
 * Add custom error pages option
 * Add Fonts ([Inter](https://github.com/rsms/inter) & [Fira Code](https://github.com/tonsky/FiraCode))
 * Add helper files option
 * Uncomment database setting in the `phpunit.xml` file
-* Run Laravel Pint after installation
+* Run [Laravel Pint](https://laravel.com/docs/pint) after installation
 * Add `deploy.sh`, `.php-cs-fixer.cache`, `/deploy/*.sh` to `.gitignore`
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  

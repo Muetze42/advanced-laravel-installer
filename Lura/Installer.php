@@ -258,7 +258,7 @@ class Installer extends LaravelInstaller
         }
         if ($this->installHelpersCollection) {
             static::addDependency(
-                $devRequirements,
+                $requirements,
                 'norman-huth/helpers-collection-laravel',
                 'v1.1.7'
             );

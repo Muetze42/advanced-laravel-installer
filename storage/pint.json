@@ -1,5 +1,8 @@
 {
     "preset": "psr12",
+    "notName": [
+        "_ide_help*.php"
+    ],
     "rules": {
         "array_indentation": true,
         "array_syntax": {

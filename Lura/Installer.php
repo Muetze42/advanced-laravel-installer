@@ -519,21 +519,21 @@ class Installer extends LaravelInstaller
             str_replace('/home', '/', $contents)
         );
 
-        $contents = file_get_contents($this->appFolder . '/app/Http/Kernel.php');
-        $contents = str_replace(
-            '\Illuminate\Routing\Middleware\ThrottleRequests::class.',
-            '\Illuminate\Routing\Middleware\ThrottleRequests::class . ',
-            $contents
-        );
-        if ($this->installHelpersCollection) {
-            $contents = str_replace(
-                '\Illuminate\Routing\Middleware\ThrottleRequests::class',
-                '\NormanHuth\HelpersLaravel\App\Http\Middleware\ForceJsonResponse::class,' .
-                "\n            \Illuminate\Routing\Middleware\ThrottleRequests::class",
-                $contents
-            );
-        }
-        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Kernel.php', $contents);
+        //$contents = file_get_contents($this->appFolder . '/app/Http/Kernel.php');
+        //$contents = str_replace(
+        //    '\Illuminate\Routing\Middleware\ThrottleRequests::class.',
+        //    '\Illuminate\Routing\Middleware\ThrottleRequests::class . ',
+        //    $contents
+        //);
+        //if ($this->installHelpersCollection) {
+        //    $contents = str_replace(
+        //        '\Illuminate\Routing\Middleware\ThrottleRequests::class',
+        //        '\NormanHuth\HelpersLaravel\App\Http\Middleware\ForceJsonResponse::class,' .
+        //        "\n            \Illuminate\Routing\Middleware\ThrottleRequests::class",
+        //        $contents
+        //    );
+        //}
+        //$this->command->cwdDisk->put($this->appFolder . '/app/Http/Kernel.php', $contents);
     }
 
     /**

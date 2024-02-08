@@ -175,11 +175,11 @@ class Installer extends LaravelInstaller
             str_replace(
                 [
                     '<!-- <env name="DB_CONNECTION" value="sqlite"/> -->',
-                    '<!-- <env name="DB_DATABASE" value=":memory:"/> -->'
+                    '<!-- <env name="DB_DATABASE" value=":memory:"/> -->',
                 ],
                 [
                     '<env name="DB_CONNECTION" value="sqlite"/>',
-                    '<env name="DB_DATABASE" value=":memory:"/>'
+                    '<env name="DB_DATABASE" value=":memory:"/>',
                 ],
                 $this->command->cwdDisk->get($file)
             )
@@ -236,7 +236,7 @@ class Installer extends LaravelInstaller
     }
 
     /**
-     * @param string $name
+     * @param string  $name
      *
      * @return string
      */
@@ -291,22 +291,22 @@ class Installer extends LaravelInstaller
             );
         }
 
-//        $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
-//        $postUpdateCmdScripts[] = './vendor/bin/pint';
-//        data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
+        //        $postUpdateCmdScripts = data_get($composerJson, 'scripts.post-update-cmd', []);
+        //        $postUpdateCmdScripts[] = './vendor/bin/pint';
+        //        data_set($composerJson, 'scripts.post-update-cmd', $postUpdateCmdScripts);
         $phpmdDirs = 'app,database,config,routes';
         if ($this->addProjectHelperFiles) {
             $phpmdDirs .= ',functions';
         }
         data_set($composerJson, 'scripts.phpmd', [
-            'phpmd ' . $phpmdDirs . ' text phpmd.xml'
+            'phpmd ' . $phpmdDirs . ' text phpmd.xml',
         ]);
         data_set($composerJson, 'scripts.pint', [
             './vendor/bin/pint',
         ]);
         data_set($composerJson, 'scripts.code-quality', [
             './vendor/bin/pint',
-            'phpmd ' . $phpmdDirs . ' text phpmd.xml'
+            'phpmd ' . $phpmdDirs . ' text phpmd.xml',
         ]);
 
         $description = data_get($composerJson, 'description', '');
@@ -332,8 +332,8 @@ class Installer extends LaravelInstaller
         $contents = file_get_contents(dirname(__DIR__) . '/storage/bootstrap.js');
         $this->command->cwdDisk->put($this->appFolder . '/resources/js/bootstrap.js', $contents);
         // PHPCS Controller
-//        $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
-//        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/Controller.php', $contents);
+        //        $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
+        //        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/Controller.php', $contents);
         // JSON Response for errors on API path and prevent route login not found
         $contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
         $this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
@@ -426,8 +426,7 @@ class Installer extends LaravelInstaller
                 $this->command->cwdDisk->put(
                     $this->appFolder . str_replace('tailwind.config.scss.js', 'tailwind.config.js', $file),
                     $contents
-                )
-                ;
+                );
             }
 
             $stylesheet = "@tailwind base;\n@tailwind components;\n@tailwind utilities;\n";
@@ -592,12 +591,26 @@ class Installer extends LaravelInstaller
     }
 
     /**
-     * @param string $name
+     * @param string  $name
      *
      * @return string
      */
     protected function getMigrationFileName(string $name): string
     {
         return date('Y_m_d_') . '000000_' . Str::snake(trim($name, '_')) . '.php';
+    }
+
+    protected function createEnv(): void
+    {
+        parent::createEnv();
+        if (!$this->docker) {
+            foreach (['/.env', '/.env.example'] as $item) {
+                $contents = $this->command->cwdDisk->get($this->appFolder . $item);
+                $this->command->cwdDisk->put(
+                    $this->appFolder . $item,
+                    str_replace('DB_HOST=127.0.0.1', 'DB_HOST=localhost', $contents)
+                );
+            }
+        }
     }
 }

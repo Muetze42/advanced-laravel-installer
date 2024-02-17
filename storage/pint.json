@@ -46,6 +46,8 @@
         "concat_space": {
             "spacing": "one"
         },
+        "no_empty_phpdoc": true,
+        "no_empty_statement": true,
         "no_short_bool_cast": true,
         "no_singleline_whitespace_before_semicolons": true,
         "no_space_around_double_colon": true,
@@ -55,6 +57,10 @@
                 "inside",
                 "outside"
             ]
+        },
+        "no_superfluous_phpdoc_tags": {
+            "allow_mixed": true,
+            "allow_unused_params": true
         },
         "no_trailing_comma_in_singleline": true,
         "no_trailing_whitespace": true,
@@ -132,6 +138,9 @@
         },
         "phpdoc_trim": true,
         "phpdoc_types": true,
+        "phpdoc_indent": true,
+        "phpdoc_inline_tag_normalizer": true,
+        "phpdoc_summary": true,
         "simplified_null_return": false,
         "single_blank_line_at_eof": true,
         "single_class_element_per_statement": {
@@ -163,6 +172,7 @@
             "equal": false,
             "identical": false,
             "less_and_greater": false
-        }
+        },
+        "Laravel/laravel_phpdoc_alignment": true
     }
 }

@@ -172,7 +172,7 @@
             "equal": false,
             "identical": false,
             "less_and_greater": false
-        },
-        "Laravel/laravel_phpdoc_alignment": true
-    }
+        }
+    },
+    "Laravel/laravel_phpdoc_alignment": true
 }

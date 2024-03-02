@@ -4,5 +4,10 @@ module.exports = {
   theme: {
     extend: {}
   },
-  plugins: [require('@tailwindcss/forms'), require('tailwind-scrollbar')({ nocompatible: true })]
+  plugins: [
+    require('@tailwindcss/forms')({
+      strategy: 'base'
+    }),
+    require('tailwind-scrollbar')({ nocompatible: true })
+  ]
 }

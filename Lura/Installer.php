@@ -46,7 +46,7 @@ class Installer extends LaravelInstaller
 
         $this->runCommand('php artisan session:table');
         $this->runCommand('php artisan queue:table');
-        $this->runCommand('php artisan dusk:install');
+        //$this->runCommand('php artisan dusk:install');
 
         if ($this->installActivitylog) {
             $command = [
@@ -272,7 +272,7 @@ class Installer extends LaravelInstaller
         if ($this->installMedialibrary) {
             static::addDependency($requirements, 'spatie/laravel-medialibrary', '10.13');
         }
-        static::addDependency($devRequirements, 'laravel/dusk', '7.11');
+        //static::addDependency($devRequirements, 'laravel/dusk', '7.11');
 
         data_set($composerJson, 'require-dev', $devRequirements);
         data_set($composerJson, 'require', $requirements);

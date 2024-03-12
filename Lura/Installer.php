@@ -338,13 +338,13 @@ class Installer extends LaravelInstaller
         //$contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
         //$this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
         // prevent route login not found
-        $contents = file_get_contents(dirname(__DIR__) . '/storage/Authenticate.php');
-        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Middleware/Authenticate.php', $contents);
+        //$contents = file_get_contents(dirname(__DIR__) . '/storage/Authenticate.php');
+        //$this->command->cwdDisk->put($this->appFolder . '/app/Http/Middleware/Authenticate.php', $contents);
         // add debug log channel
-        $contents = $this->command->cwdDisk->get($this->appFolder . '/config/logging.php');
-        $replace = file_get_contents(dirname(__DIR__) . '/storage/logging.stub');
-        $contents = str_replace("'slack' => [", $replace, $contents);
-        $this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
+        //$contents = $this->command->cwdDisk->get($this->appFolder . '/config/logging.php');
+        //$replace = file_get_contents(dirname(__DIR__) . '/storage/logging.stub');
+        //$contents = str_replace("'slack' => [", $replace, $contents);
+        //$this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
 
         // Files
         //$files = ['/.editorconfig', '/phpcs.xml', '/pint.json', '/deploy.sh', '/phpmd.xml'];

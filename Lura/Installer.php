@@ -512,11 +512,11 @@ class Installer extends LaravelInstaller
             );
         }
 
-        $contents = file_get_contents($this->appFolder . '/app/Providers/RouteServiceProvider.php');
-        $this->command->cwdDisk->put(
-            $this->appFolder . '/app/Providers/RouteServiceProvider.php',
-            str_replace('/home', '/', $contents)
-        );
+        //$contents = file_get_contents($this->appFolder . '/app/Providers/RouteServiceProvider.php');
+        //$this->command->cwdDisk->put(
+        //    $this->appFolder . '/app/Providers/RouteServiceProvider.php',
+        //    str_replace('/home', '/', $contents)
+        //);
 
         //$contents = file_get_contents($this->appFolder . '/app/Http/Kernel.php');
         //$contents = str_replace(

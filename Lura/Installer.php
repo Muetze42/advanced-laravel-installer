@@ -335,8 +335,8 @@ class Installer extends LaravelInstaller
         //        $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
         //        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/Controller.php', $contents);
         // JSON Response for errors on API path and prevent route login not found
-        $contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
-        $this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
+        //$contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
+        //$this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
         // prevent route login not found
         $contents = file_get_contents(dirname(__DIR__) . '/storage/Authenticate.php');
         $this->command->cwdDisk->put($this->appFolder . '/app/Http/Middleware/Authenticate.php', $contents);

@@ -143,8 +143,8 @@ class Installer extends LaravelInstaller
         }
 
         // Publish new Sanctum config
-        $this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
-        $this->runCommand('php artisan vendor:publish --tag=sanctum-config');
+        //$this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
+        //$this->runCommand('php artisan vendor:publish --tag=sanctum-config');
         $this->updateTesting();
         $this->renameMigrations();
         $this->runCommand($this->command->composer . ' pint');

@@ -346,6 +346,14 @@ class Installer extends LaravelInstaller
         //$contents = str_replace("'slack' => [", $replace, $contents);
         //$this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
 
+        // Add API route file
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/api.php');
+        $this->command->cwdDisk->put($this->appFolder . '/routes/api.php', $contents);
+
+        // Change bootstrap app
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/app.php');
+        $this->command->cwdDisk->put($this->appFolder . '/bootstrap/app.php', $contents);
+
         // Files
         //$files = ['/.editorconfig', '/phpcs.xml', '/pint.json', '/deploy.sh', '/phpmd.xml'];
         $files = ['/.editorconfig', '/pint.json', '/deploy.sh', '/phpmd.xml'];

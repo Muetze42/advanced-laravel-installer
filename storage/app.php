@@ -17,6 +17,6 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
-            return $request->expectsJson() || str_starts_with($request->path(), 'api/') || $request->path() == 'api';
+            return $request->expectsJson() || $request->is('api') || $request->is('api/*');
         });
     })->create();

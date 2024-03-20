@@ -1,0 +1,17 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ rootNamespace }}Http\Controllers\AbstractController;
+use Illuminate\Http\Request;
+
+class {{ class }} extends AbstractController
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke(Request $request)
+    {
+        //
+    }
+}

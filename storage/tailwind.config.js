@@ -2,7 +2,12 @@
 module.exports = {
   content: ['./resources/**/*.blade.php', './resources/**/*.js', './resources/**/*.vue'],
   theme: {
-    extend: {}
+    extend: {
+      fontFamily: {
+        // sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+        // mono: ['Fira Code VF', ...defaultTheme.fontFamily.mono]
+      }
+    }
   },
   plugins: [
     require('@tailwindcss/forms')({

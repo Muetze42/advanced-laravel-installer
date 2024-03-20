@@ -44,8 +44,6 @@ class Installer extends LaravelInstaller
             $this->command->cwdDisk->path($this->appFolder . '/lang')
         );
 
-        $this->runCommand('php artisan session:table');
-        $this->runCommand('php artisan queue:table');
         //$this->runCommand('php artisan dusk:install');
 
         if ($this->installActivitylog) {
@@ -331,20 +329,6 @@ class Installer extends LaravelInstaller
         // bootstrap.js prettier
         $contents = file_get_contents(dirname(__DIR__) . '/storage/bootstrap.js');
         $this->command->cwdDisk->put($this->appFolder . '/resources/js/bootstrap.js', $contents);
-        // PHPCS Controller
-        //        $contents = file_get_contents(dirname(__DIR__) . '/storage/Controller.php');
-        //        $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/Controller.php', $contents);
-        // JSON Response for errors on API path and prevent route login not found
-        //$contents = file_get_contents(dirname(__DIR__) . '/storage/Handler.php');
-        //$this->command->cwdDisk->put($this->appFolder . '/app/Exceptions/Handler.php', $contents);
-        // prevent route login not found
-        //$contents = file_get_contents(dirname(__DIR__) . '/storage/Authenticate.php');
-        //$this->command->cwdDisk->put($this->appFolder . '/app/Http/Middleware/Authenticate.php', $contents);
-        // add debug log channel
-        //$contents = $this->command->cwdDisk->get($this->appFolder . '/config/logging.php');
-        //$replace = file_get_contents(dirname(__DIR__) . '/storage/logging.stub');
-        //$contents = str_replace("'slack' => [", $replace, $contents);
-        //$this->command->cwdDisk->put($this->appFolder . '/config/logging.php', $contents);
 
         // Add API route file
         $contents = file_get_contents(dirname(__DIR__) . '/storage/api.php');
@@ -402,10 +386,17 @@ class Installer extends LaravelInstaller
 
             $contents = file_get_contents(dirname(__DIR__) . '/storage/Home.vue');
             $this->command->cwdDisk->put($this->appFolder . '/resources/js/Pages/Home/Index.vue', $contents);
+
             $contents = file_get_contents(dirname(__DIR__) . '/storage/HomeController.php');
             $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/HomeController.php', $contents);
+
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/AbstractController.php');
+            $this->command->cwdDisk->put($this->appFolder . '/app/Http/Controllers/AbstractController.php', $contents);
+
             $contents = file_get_contents(dirname(__DIR__) . '/storage/web.php');
             $this->command->cwdDisk->put($this->appFolder . '/routes/web.php', $contents);
+
+            $this->command->cwdDisk->delete($this->appFolder . '/app/Http/Controllers/Controller.php');
         }
 
         if ($this->useScss) {

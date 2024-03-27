@@ -51,6 +51,7 @@ class Installer extends LaravelInstaller
                 'php artisan vendor:publish',
                 '--provider="Spatie\Activitylog\ActivitylogServiceProvider"',
                 '--tag="activitylog-config"',
+                '--ansi',
             ];
             $this->runCommand(implode(' ', $command));
 
@@ -83,13 +84,14 @@ class Installer extends LaravelInstaller
             $command = [
                 'php artisan vendor:publish',
                 '--provider="Spatie\MediaLibrary\MediaLibraryServiceProvider"',
-                '--tag="migrations"',
+                '--tag="medialibrary-migrations"',
             ];
             $this->runCommand(implode(' ', $command));
             $command = [
                 'php artisan vendor:publish',
                 '--provider="Spatie\MediaLibrary\MediaLibraryServiceProvider"',
-                '--tag="config"',
+                '--tag="medialibrary-config"',
+                '--ansi',
             ];
             $this->runCommand(implode(' ', $command));
             $file = $this->appFolder . '/config/media-library.php';
@@ -145,7 +147,7 @@ class Installer extends LaravelInstaller
         //$this->runCommand('php artisan vendor:publish --tag=sanctum-config');
         $this->updateTesting();
         $this->renameMigrations();
-        $this->runCommand($this->command->composer . ' pint');
+        $this->runCommand($this->command->composer . ' pint --ansi');
         $this->npmDependencies();
     }
 
@@ -539,7 +541,7 @@ class Installer extends LaravelInstaller
      */
     protected function questions(): void
     {
-        $this->questionDev();
+        //$this->questionDev();
         $this->questionInertia();
         $this->questionNova();
         $this->questionDocker();

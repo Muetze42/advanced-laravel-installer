@@ -2,8 +2,8 @@
     "name": "norman-huth/advanced-laravel-installer",
     "license": "MIT",
     "require": {
-        "php": "^8.1",
-        "norman-huth/laravel-installer": "^v2.0.2"
+        "php": "^8.2",
+        "norman-huth/laravel-installer": "^2.0.12"
     },
     "scripts": {
         "post-package-install": [

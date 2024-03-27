@@ -85,6 +85,7 @@ class Installer extends LaravelInstaller
                 'php artisan vendor:publish',
                 '--provider="Spatie\MediaLibrary\MediaLibraryServiceProvider"',
                 '--tag="medialibrary-migrations"',
+                '--ansi',
             ];
             $this->runCommand(implode(' ', $command));
             $command = [
@@ -144,7 +145,7 @@ class Installer extends LaravelInstaller
 
         // Publish new Sanctum config
         //$this->command->cwdDisk->delete($this->appFolder . '/config/sanctum.php');
-        //$this->runCommand('php artisan vendor:publish --tag=sanctum-config');
+        //$this->runCommand('php artisan vendor:publish --tag=sanctum-config --ansi');
         $this->updateTesting();
         $this->renameMigrations();
         $this->runCommand($this->command->composer . ' pint --ansi');

@@ -254,14 +254,14 @@ class Installer extends LaravelInstaller
         if ($this->installIdeHelper) {
             static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
         }
-        if ($this->installPhpLibrary) {
+        if ($this->installSentry) {
             static::addDependency(
                 $requirements,
                 'sentry/sentry-laravel',
                 '4.4'
             );
         }
-        if ($this->installSentry) {
+        if ($this->installPhpLibrary) {
             static::addDependency(
                 $requirements,
                 'norman-huth/php-library',
@@ -428,7 +428,8 @@ class Installer extends LaravelInstaller
 
         $viteConfig = $this->appFolder . '/vite.config.js';
         if ($this->installInertia) {
-            $contents = file_get_contents(dirname(__DIR__) . '/storage/vite.config.js');
+            $file = $this->installSentry ? 'vite.config.sentry.js' : 'vite.config.js';
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/' . $file);
             $this->command->cwdDisk->put($viteConfig, $contents);
 
             $contents = file_get_contents(dirname(__DIR__) . '/storage/Home.vue');
@@ -534,7 +535,8 @@ class Installer extends LaravelInstaller
         );
 
         if ($this->installInertia) {
-            $contents = file_get_contents(dirname(__DIR__) . '/storage/app.js');
+            $file = $this->installSentry ? 'app.sentry.js' : 'app.js';
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/' . $file);
             $this->command->cwdDisk->put($this->appFolder . '/resources/js/app.js', $contents);
         }
 

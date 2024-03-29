@@ -12,7 +12,6 @@ the following changes:
 * Add [ESLint](https://eslint.org) option
 * Add [IDE Helper Generator for Laravel](https://github.com/barryvdh/laravel-ide-helper) option
 * Add „[Sass](https://sass-lang.com) instead of CSS“ option
-* Add [norman-huth/php-library](https://github.com/Muetze42/php-library) option
 * Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
 * response as JSON on API path [app.php](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/app.php#L20)
 * Set `redirectGuestsTo` `/` in [app.php](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/app.php#L16)
@@ -41,6 +40,8 @@ the following changes:
 * Add `deploy.sh`, `.php-cs-fixer.cache`, `/deploy/*.sh` to `.gitignore`
 * Add [Sentry](https://sentry.io/) option
 * Change rename base Controller to AbstractController
+* Add [norman-huth/php-library](https://github.com/Muetze42/php-library) option
+* Add [dev commands](https://github.com/Muetze42/php-library/blob/main/src/Lib/CommandRegistry.php#L14) if install php-library
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  
 I create each of my Laravel applications with this installer to save time on an initial setup.

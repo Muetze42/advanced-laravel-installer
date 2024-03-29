@@ -676,7 +676,6 @@ class Installer extends LaravelInstaller
                 $content .= 'VITE_SENTRY_DSN_PUBLIC="${SENTRY_LARAVEL_DSN}"' . "\n";
                 $content .= 'SENTRY_AUTH_TOKEN=' . "\n";
                 $content .= 'VITE_SENTRY_AUTH_TOKEN=' . "\n";
-                $content .= "\n";
             }
 
             $this->command->cwdDisk->put($this->appFolder . '/.env.example', $content);

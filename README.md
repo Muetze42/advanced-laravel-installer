@@ -12,7 +12,7 @@ the following changes:
 * Add [ESLint](https://eslint.org) option
 * Add [IDE Helper Generator for Laravel](https://github.com/barryvdh/laravel-ide-helper) option
 * Add „[Sass](https://sass-lang.com) instead of CSS“ option
-* Add [norman-huth/helpers-collection-laravel](https://github.com/Muetze42/helpers-collection-laravel) option
+* Add [norman-huth/php-library](https://github.com/Muetze42/php-library) option
 * Add a complete working setup if install [Inertia.js](https://inertiajs.com/)
 * response as JSON on API path [app.php](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/app.php#L20)
 * Set `redirectGuestsTo` `/` in [app.php](https://github.com/Muetze42/advanced-laravel-installer/blob/main/storage/app.php#L16)

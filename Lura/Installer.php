@@ -17,6 +17,7 @@ class Installer extends LaravelInstaller
     protected bool $installTailwindCss = true;
     protected bool $installEslint = true;
     protected bool $installHelpersCollection = true;
+    protected bool $installSentry = true;
     protected bool $useScss = true;
     protected bool $installActivitylog = false;
     protected bool $installMedialibrary = false;
@@ -212,7 +213,7 @@ class Installer extends LaravelInstaller
     protected function npmDependencies(): void
     {
         if ($this->installInertia) {
-            $installNovaNpmDependencies = $this->command->choice(
+            $installNpmDependencies = $this->command->choice(
                 'Would You like install NPM dependencies and compile the assets?',
                 [
                     'no',
@@ -222,11 +223,11 @@ class Installer extends LaravelInstaller
                 0
             );
 
-            if ($installNovaNpmDependencies == 'Yes with NPM') {
+            if ($installNpmDependencies == 'Yes with NPM') {
                 $this->runCommand('npm i && npm run build');
             }
 
-            if ($installNovaNpmDependencies == 'Yes with PNPM') {
+            if ($installNpmDependencies == 'Yes with PNPM') {
                 $this->runCommand('pnpm i && pnpm run build');
             }
         }
@@ -254,6 +255,13 @@ class Installer extends LaravelInstaller
             static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
         }
         if ($this->installHelpersCollection) {
+            static::addDependency(
+                $requirements,
+                'sentry/sentry-laravel',
+                '4.4'
+            );
+        }
+        if ($this->installSentry) {
             static::addDependency(
                 $requirements,
                 'norman-huth/php-library',
@@ -342,6 +350,26 @@ class Installer extends LaravelInstaller
         // Change bootstrap app
         $file = $this->installHelpersCollection ? 'app-w-helpers.php' : 'app.php';
         $contents = file_get_contents(dirname(__DIR__) . '/storage/' . $file);
+
+        if ($this->installSentry) {
+            $contents = str_replace(
+                'use Illuminate\Foundation\Application;',
+                'use Illuminate\Foundation\Application;' . "\n" . 'use Sentry\Laravel\Integration;',
+                $contents
+            );
+
+            $sentry = [
+                '        Integration::handles($exceptions);',
+                '        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {',
+            ];
+
+            $contents = str_replace(
+                '$exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {',
+                implode("\n", $sentry),
+                $contents
+            );
+        }
+
         $this->command->cwdDisk->put($this->appFolder . '/bootstrap/app.php', $contents);
 
         // Files
@@ -480,6 +508,11 @@ class Installer extends LaravelInstaller
             }
         }
 
+        if ($this->installSentry) {
+            static::addDependency($devDependencies, '@sentry/vite-plugin', '2.16.0');
+            static::addDependency($devDependencies, '@sentry/vue', '7.109.0');
+        }
+
         data_set($packageJson, 'devDependencies', $devDependencies);
         data_set($packageJson, 'dependencies', $dependencies);
         $this->command->cwdDisk->put(
@@ -549,15 +582,6 @@ class Installer extends LaravelInstaller
         $this->questionInertia();
         $this->questionNova();
         $this->questionDocker();
-        $this->installFontAwesome = $this->command->choice(
-            'Install Font Awesome Vue?',
-            [
-                'no',
-                'Pro',
-                'Free',
-            ],
-            $this->installFontAwesome
-        );
 
         $this->installIdeHelper = $this->command->confirm(
             'Install IDE Helper Generator for Laravel?',
@@ -566,6 +590,10 @@ class Installer extends LaravelInstaller
         $this->installHelpersCollection = $this->command->confirm(
             'Install IDE norman-huth/php-library?',
             $this->installHelpersCollection
+        );
+        $this->installSentry = $this->command->confirm(
+            'Install IDE Sentry?',
+            $this->installSentry
         );
         $this->installTailwindCss = $this->command->confirm('Install Tailwind CSS?', $this->installTailwindCss);
         $this->useScss = $this->command->confirm('Use SCSS instead of CSS?', $this->useScss);
@@ -582,6 +610,16 @@ class Installer extends LaravelInstaller
         $this->installMedialibrary = $this->command->confirm(
             'Install spatie/laravel-medialibrary?',
             $this->installMedialibrary
+        );
+
+        $this->installFontAwesome = $this->command->choice(
+            'Install Font Awesome Vue?',
+            [
+                'no',
+                'Pro',
+                'Free',
+            ],
+            $this->installFontAwesome
         );
 
         $this->installErrorPages = $this->command->confirm(
@@ -607,7 +645,30 @@ class Installer extends LaravelInstaller
 
     protected function createEnv(): void
     {
+        if ($this->installSentry) {
+            $content = '';
+            $lines = explode("\n", trim($this->command->cwdDisk->get($this->appFolder . '/.env.example')));
+            foreach ($lines as $line) {
+                $content .= $line . "\n";
+
+                if (!str_starts_with($line, 'APP_URL')) {
+                    continue;
+                }
+
+                $content .= "\n";
+                $content .= 'SENTRY_LARAVEL_DSN=' . "\n";
+                $content .= 'SENTRY_TRACES_SAMPLE_RATE=' . "\n";
+                $content .= 'VITE_SENTRY_DSN_PUBLIC="${SENTRY_LARAVEL_DSN}"' . "\n";
+                $content .= 'SENTRY_AUTH_TOKEN=' . "\n";
+                $content .= 'VITE_SENTRY_AUTH_TOKEN=' . "\n";
+                $content .= "\n";
+            }
+
+            $this->command->cwdDisk->put($this->appFolder . '/.env.example', $content);
+        }
+
         parent::createEnv();
+
         if (!$this->docker) {
             foreach (['/.env', '/.env.example'] as $item) {
                 $contents = $this->command->cwdDisk->get($this->appFolder . $item);

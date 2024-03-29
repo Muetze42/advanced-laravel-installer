@@ -39,6 +39,7 @@ the following changes:
 * Uncomment database setting in the `phpunit.xml` file
 * Run [Laravel Pint](https://laravel.com/docs/pint) after installation
 * Add `deploy.sh`, `.php-cs-fixer.cache`, `/deploy/*.sh` to `.gitignore`
+* Add [Sentry](https://sentry.io/) option
 * Change rename base Controller to AbstractController
 
 This installer only has the Vue.js as option, because I created this only according to my **personal** needs.  

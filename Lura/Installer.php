@@ -16,7 +16,7 @@ class Installer extends LaravelInstaller
     protected bool $installHeadlessUi = true;
     protected bool $installTailwindCss = true;
     protected bool $installEslint = true;
-    protected bool $installHelpersCollection = true;
+    protected bool $installPhpLibrary = true;
     protected bool $installSentry = true;
     protected bool $useScss = true;
     protected bool $installActivitylog = false;
@@ -110,7 +110,7 @@ class Installer extends LaravelInstaller
                 'App\\Models\\Media::class',
                 $contents
             );
-            if ($this->installHelpersCollection) {
+            if ($this->installPhpLibrary) {
                 $contents = file_get_contents(dirname(__DIR__) . '/storage/media-library/config.stub');
             }
             $this->command->cwdDisk->put(
@@ -254,7 +254,7 @@ class Installer extends LaravelInstaller
         if ($this->installIdeHelper) {
             static::addDependency($devRequirements, 'barryvdh/laravel-ide-helper', '2.13');
         }
-        if ($this->installHelpersCollection) {
+        if ($this->installPhpLibrary) {
             static::addDependency(
                 $requirements,
                 'sentry/sentry-laravel',
@@ -339,19 +339,32 @@ class Installer extends LaravelInstaller
 
         // Add API route file
         $contents = file_get_contents(dirname(__DIR__) . '/storage/api.php');
+
+        if ($this->installSentry) {
+            $contents = str_replace(
+                'use Illuminate\Support\Facades\Route;',
+                'use Illuminate\Support\Facades\Route;' . "\n" .
+                'use NormanHuth\Library\Http\Controllers\Api\SentryTunnelController;',
+                $contents
+            );
+
+            $contents = trim($contents);
+            $contents .= "Route::post('sentry-tunnel', SentryTunnelController::class);\n";
+        }
+
         $this->command->cwdDisk->put($this->appFolder . '/routes/api.php', $contents);
 
         // Update console.php
-        if ($this->installHelpersCollection) {
+        if ($this->installPhpLibrary) {
             $contents = file_get_contents(dirname(__DIR__) . '/storage/console.php');
             $this->command->cwdDisk->put($this->appFolder . '/routes/console.php', $contents);
         }
 
         // Change bootstrap app
-        $file = $this->installHelpersCollection ? 'app-w-helpers.php' : 'app.php';
+        $file = $this->installPhpLibrary ? 'app-w-helpers.php' : 'app.php';
         $contents = file_get_contents(dirname(__DIR__) . '/storage/' . $file);
 
-        if ($this->installSentry) {
+        if ($this->installSentry && $this->installPhpLibrary) {
             $contents = str_replace(
                 'use Illuminate\Foundation\Application;',
                 'use Illuminate\Foundation\Application;' . "\n" . 'use Sentry\Laravel\Integration;',
@@ -562,7 +575,7 @@ class Installer extends LaravelInstaller
         //    '\Illuminate\Routing\Middleware\ThrottleRequests::class . ',
         //    $contents
         //);
-        //if ($this->installHelpersCollection) {
+        //if ($this->installPhpLibrary) {
         //    $contents = str_replace(
         //        '\Illuminate\Routing\Middleware\ThrottleRequests::class',
         //        '\NormanHuth\HelpersLaravel\App\Http\Middleware\ForceJsonResponse::class,' .
@@ -587,9 +600,9 @@ class Installer extends LaravelInstaller
             'Install IDE Helper Generator for Laravel?',
             $this->installIdeHelper
         );
-        $this->installHelpersCollection = $this->command->confirm(
+        $this->installPhpLibrary = $this->command->confirm(
             'Install IDE norman-huth/php-library?',
-            $this->installHelpersCollection
+            $this->installPhpLibrary
         );
         $this->installSentry = $this->command->confirm(
             'Install IDE Sentry?',

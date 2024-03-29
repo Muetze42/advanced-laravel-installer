@@ -2,7 +2,7 @@
 
 // phpcs:disable PSR1.Classes.ClassDeclaration.MissingNamespace
 
-use NormanHuth\Helpers\Str;
+use Illuminate\Support\Str;
 
 define('LARAVEL_INSTALLER_DIR', dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'laravel-installer');
 
@@ -104,18 +104,14 @@ class Installer extends LaravelInstaller
             );
 
             $contents = file_get_contents($file);
-            if ($this->installHelpersCollection) {
-                $contents = str_replace(
-                    'Spatie\\MediaLibrary\\Support\\PathGenerator\\DefaultPathGenerator::class',
-                    'NormanHuth\\HelpersLaravel\\Spatie\\MediaLibrary\\CustomPathGenerator::class',
-                    $contents
-                );
-            }
             $contents = str_replace(
                 'Spatie\\MediaLibrary\\MediaCollections\\Models\\Media::class',
                 'App\\Models\\Media::class',
                 $contents
             );
+            if ($this->installHelpersCollection) {
+                $contents = file_get_contents(dirname(__DIR__) . '/storage/media-library/config.stub');
+            }
             $this->command->cwdDisk->put(
                 $file,
                 $contents
@@ -260,8 +256,8 @@ class Installer extends LaravelInstaller
         if ($this->installHelpersCollection) {
             static::addDependency(
                 $requirements,
-                'norman-huth/helpers-collection-laravel',
-                'v1.1.7'
+                'norman-huth/php-library',
+                '@dev'
             );
         }
         if ($this->installNova) {
@@ -337,8 +333,15 @@ class Installer extends LaravelInstaller
         $contents = file_get_contents(dirname(__DIR__) . '/storage/api.php');
         $this->command->cwdDisk->put($this->appFolder . '/routes/api.php', $contents);
 
+        // Update console.php
+        if ($this->installHelpersCollection) {
+            $contents = file_get_contents(dirname(__DIR__) . '/storage/console.php');
+            $this->command->cwdDisk->put($this->appFolder . '/routes/console.php', $contents);
+        }
+
         // Change bootstrap app
-        $contents = file_get_contents(dirname(__DIR__) . '/storage/app.php');
+        $file = $this->installHelpersCollection ? 'app-w-helpers.php' : 'app.php';
+        $contents = file_get_contents(dirname(__DIR__) . '/storage/' . $file);
         $this->command->cwdDisk->put($this->appFolder . '/bootstrap/app.php', $contents);
 
         // Files
@@ -561,7 +564,7 @@ class Installer extends LaravelInstaller
             $this->installIdeHelper
         );
         $this->installHelpersCollection = $this->command->confirm(
-            'Install IDE norman-huth/helpers-collection-laravel?',
+            'Install IDE norman-huth/php-library?',
             $this->installHelpersCollection
         );
         $this->installTailwindCss = $this->command->confirm('Install Tailwind CSS?', $this->installTailwindCss);
